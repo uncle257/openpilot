@@ -340,8 +340,9 @@ class CarState(CarStateBase):
 
     ret.brakePressed = cp.vl["TCS"]["DriverBraking"] == 1
 
-    ret.doorOpen = cp.vl["DOORS_SEATBELTS"]["DRIVER_DOOR"] == 1
-    ret.seatbeltUnlatched = cp.vl["DOORS_SEATBELTS"]["DRIVER_SEATBELT"] == 0
+    if self.CP.extFlags & HyundaiExtFlags.DOOR_SEAT_BELTS.value:
+      ret.doorOpen = cp.vl["DOORS_SEATBELTS"]["DRIVER_DOOR"] == 1
+      ret.seatbeltUnlatched = cp.vl["DOORS_SEATBELTS"]["DRIVER_SEATBELT"] == 0
 
     gear = cp.vl[self.gear_msg_canfd]["GEAR"]
     ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(gear))
@@ -557,10 +558,13 @@ class CarState(CarStateBase):
       ("CRUISE_BUTTONS_ALT", 50),
       #("TPMS", 5),
       ("BLINKERS", 4),
-      ("DOORS_SEATBELTS", 4),
+      #("DOORS_SEATBELTS", 4),
     ]
 
-
+    if CP.extFlags & HyundaiExtFlags.DOOR_SEAT_BELTS.value:
+      pt_messages += [
+        ("DOORS_SEATBELTS", 4),
+      ]
     if CP.extFlags & HyundaiExtFlags.CANFD_TPMS.value:
       pt_messages += [
         ("TPMS", 5),
