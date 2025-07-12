@@ -157,6 +157,7 @@ class HyundaiExtFlags(IntFlag):
   STEER_TOUCH = 2 ** 13
   CANFD_4A3 = 2 ** 14
   DOOR_SEAT_BELTS = 2 ** 15
+  HAS_BLINKERS = 2 ** 16
 
 class Footnote(Enum):
   CANFD = CarFootnote(

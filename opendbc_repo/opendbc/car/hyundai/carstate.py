@@ -380,9 +380,10 @@ class CarState(CarStateBase):
       self.steer_touch_info = copy.copy(cp.vl["STEER_TOUCH_2AF"])
 
     # carrot test
-    left_blinker_lamp = cp.vl["BLINKERS"]["LEFT_LAMP"] or cp.vl["BLINKERS"]["LEFT_LAMP_ALT"]
-    right_blinker_lamp = cp.vl["BLINKERS"]["RIGHT_LAMP"] or cp.vl["BLINKERS"]["RIGHT_LAMP_ALT"]
-    ret.leftBlinker, ret.rightBlinker = self.update_blinker_from_lamp(50, left_blinker_lamp, right_blinker_lamp)
+    if self.CP.extFlags & HyundaiExtFlags.HAS_BLINKERS.value:  
+      left_blinker_lamp = cp.vl["BLINKERS"]["LEFT_LAMP"] or cp.vl["BLINKERS"]["LEFT_LAMP_ALT"]
+      right_blinker_lamp = cp.vl["BLINKERS"]["RIGHT_LAMP"] or cp.vl["BLINKERS"]["RIGHT_LAMP_ALT"]
+      ret.leftBlinker, ret.rightBlinker = self.update_blinker_from_lamp(50, left_blinker_lamp, right_blinker_lamp)
 
     # TODO: alt signal usage may be described by cp.vl['BLINKERS']['USE_ALT_LAMP']
     #left_blinker_sig, right_blinker_sig = "LEFT_LAMP", "RIGHT_LAMP"
@@ -557,7 +558,7 @@ class CarState(CarStateBase):
       ("TCS", 50),
       ("CRUISE_BUTTONS_ALT", 50),
       #("TPMS", 5),
-      ("BLINKERS", 4),
+      #("BLINKERS", 4),
       #("DOORS_SEATBELTS", 4),
     ]
 
@@ -565,6 +566,12 @@ class CarState(CarStateBase):
       pt_messages += [
         ("DOORS_SEATBELTS", 4),
       ]
+
+    if CP.extFlags & HyundaiExtFlags.HAS_BLINKERS.value:
+      pt_messages += [
+        ("BLINKERS", 4),
+      ]
+
     if CP.extFlags & HyundaiExtFlags.CANFD_TPMS.value:
       pt_messages += [
         ("TPMS", 5),

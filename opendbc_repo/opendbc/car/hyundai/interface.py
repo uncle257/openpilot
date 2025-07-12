@@ -60,6 +60,9 @@ class CarInterface(CarInterfaceBase):
       if 1041 in fingerprint[CAN.ECAN]:
         ret.extFlags |= HyundaiExtFlags.DOOR_SEAT_BELTS.value
 
+      if 1043 in fingerprint[CAN.ECAN]:
+        ret.extFlags |= HyundaiExtFlags.HAS_BLINKERS.value
+
       if 203 in fingerprint[CAN.CAM]: # LFA_ALT
         print("##### Anglecontrol detected (LFA_ALT)")
         ret.flags |= HyundaiFlags.ANGLE_CONTROL.value
