@@ -1,41 +1,41 @@
-import copy
-from cereal import car
-from common.conversions import Conversions as CV
-from common.numpy_fast import mean
-from opendbc.can.can_define import CANDefine
-from opendbc.can.parser import CANParser
-from selfdrive.car.interfaces import CarStateBase
-from selfdrive.car.gm.values import DBC, AccState, CanBus, STEER_THRESHOLD, CC_ONLY_CAR
+进口复制
+从谷物进口汽车
+从通用.转换进口转换策略如同履历
+从common.numpy_fast进口意思是
+从opendbc.can.can_define进口坎迪芬
+从opendbc.can.parser进口CANParser
+从selfdrive.car .接口进口CarStateBase
+从selfdrive.car.gm.values进口DBC，AccState，CanBus，STEER_THRESHOLD，CC_ONLY_CAR
 
-TransmissionType = car.CarParams.TransmissionType
-NetworkLocation = car.CarParams.NetworkLocation
-GearShifter = car.CarState.GearShifter
-STANDSTILL_THRESHOLD = 10 * 0.0311 * CV.KPH_TO_MS
+变速器类型=汽车。腕骨.传输类型
+网络位置=汽车。腕骨.网络位置
+变速杆=汽车。卡斯塔特.变速杆
+静止_阈值=10 * 0.0311*简历。公里小时至毫秒
 
 
-class CarState(CarStateBase):
-  def __init__(self, CP):
-    super().__init__(CP)
-    can_define = CANDefine(DBC[CP.carFingerprint]["pt"])
-    self.shifter_values = can_define.dv["ECMPRDNL2"]["PRNDL2"]
-    self.cluster_speed_hyst_gap = CV.KPH_TO_MS / 2.
-    self.cluster_min_speed = CV.KPH_TO_MS / 2.
+班级卡斯塔特(CarStateBase):
+  极好的 __init__(自我，CP):
+    极好的().__init__(大脑性麻痹)
+can_define =坎迪芬(DBC[比较汽车指纹][" pt "])
+自我。移位器_值= can_define。dv[" ECMPRDNL2 "][" PRNDL2 "]
+自我。集群_速度_滞后_间隙= CV。公里小时至毫秒 / 2.
+自我。集群最小速度= CV。公里小时至毫秒 / 2.
 
-    self.loopback_lka_steering_cmd_updated = False
-    self.loopback_lka_steering_cmd_ts_nanos = 0
-    self.pt_lka_steering_cmd_counter = 0
-    self.cam_lka_steering_cmd_counter = 0
-    self.buttons_counter = 0
-    self.single_pedal_mode = False
+自我。环回_ lka _转向_ cmd _更新 = 错误的
+自我。环回_ lka _转向_cmd_ts_nanos = 0
+自我。pt _ lka _转向_ cmd _计数器 = 0
+自我。凸轮_ lka _转向_指令_计数器 = 0
+自我。按钮_计数器 = 0
+自我。单踏板模式 = 错误的
 
-  def update(self, pt_cp, cam_cp, loopback_cp):
-    ret = car.CarState.new_message()
+  极好的 更新(self、pt_cp、cam_cp、loopback_cp):
+ret =汽车。卡斯塔特.新消息()
 
-    self.prev_cruise_buttons = self.cruise_buttons
-    self.cruise_buttons = pt_cp.vl["ASCMSteeringButton"]["ACCButtons"]
-    self.buttons_counter = pt_cp.vl["ASCMSteeringButton"]["RollingCounter"]
+自我。上一页_巡航_按钮=自我。巡航按钮
+自我。巡航按钮= pt_cp。vl[" ASCMSteeringButton "]["按钮"]
+自我。按钮_计数器= pt_cp。vl[" ASCMSteeringButton "]["滚动计数器"]
     self.pscm_status = copy.copy(pt_cp.vl["PSCMStatus"])
-    moving_forward = pt_cp.vl["EBCMWheelSpdRear"]["MovingForward"] != 0
+    moving_forward = pt_cp.vl["EBCMWheelSpdRear"]["MovingForward"] = 0
     self.moving_backward = (pt_cp.vl["EBCMWheelSpdRear"]["MovingBackward"] != 0) and not moving_forward
 
     # Variables used for avoiding LKAS faults
